@@ -29,7 +29,7 @@ setup(
     author='jerry hu',
     author_email='jerryhu_123@163.com',
     url='https://github.com/jerryhu1234/sentry-wechat',
-    description='A Sentry extension which integrates with Wetchat robot.',
+    description='A Sentry extension which integrates with Wechat robot.',
     long_description=__doc__,
     license='BSD',
     packages=find_packages(exclude=['tests']),
@@ -40,7 +40,7 @@ setup(
     test_suite='nose.collector',
     entry_points={
         'sentry.plugins': [
-            'wetchat = sentry_wetchat.plugin:WetchatPlugin'
+            'wechat = sentry_wechat.plugin:WechatPlugin'
         ],
     },
     include_package_data=True,

@@ -1,5 +1,5 @@
 """
-sentry_wetchat.models
+sentry_wechat.models
 ~~~~~~~~~~~~~~~~~~~~~
 
 :copyright: (c) 2019 by Jerry hu, see AUTHORS for more details.
@@ -41,9 +41,9 @@ def validate_urls(value, **kwargs):
     return '\n'.join(output)
 
 # https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4929eab2-xxxx
-class WetchatForm(notify.NotificationConfigurationForm):
+class WechatForm(notify.NotificationConfigurationForm):
     urls = forms.CharField(
-        label=_('Wetchat robot url'),
+        label=_('Wechat robot url'),
         widget=forms.Textarea(attrs={
             'class': 'span6', 'placeholder': 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4929eab2'}),
         help_text=_('Enter Wechat robot url.'))
@@ -57,10 +57,10 @@ class WechatPlugin(notify.NotificationPlugin):
     author = 'jerry hu'
     author_url = 'https://github.com/jerryhu1234/sentry-wechat'
     version = sentry.VERSION
-    description = "Integrates wetchat robot."
+    description = "Integrates wechat robot."
     resource_links = [
         ('Bug Tracker', 'https://github.com/jerryhu1234/sentry-wechat/issues'),
-        ('Source', 'https://github.com/jerryhu1234/sentry-wetchat'),
+        ('Source', 'https://github.com/jerryhu1234/sentry-wechat'),
     ]
 
     slug = 'wechat'
