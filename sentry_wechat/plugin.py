@@ -6,28 +6,13 @@ sentry_wechat.models
 :license: BSD, see LICENSE for more details.
 """
 
-from __future__ import absolute_import
-
-import time
 import json
+
 import requests
-import logging
-import six
-import sentry
-import sentry_wechat
-
-from django import forms
-from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-
-from sentry.exceptions import PluginError
-# from sentry.plugins.bases import notify
 from sentry.plugins.bases.notify import NotificationPlugin
-from sentry.http import is_valid_url, safe_urlopen
-from sentry.utils.safe import safe_execute
 
-from sentry.utils.http import absolute_uri
-from django.core.urlresolvers import reverse
+import sentry_wechat
+from .forms import DingDingOptionsForm
 
 def validate_urls(value, **kwargs):
     output = []
@@ -87,18 +72,6 @@ class WechatPlugin(NotificationPlugin):
         """
         return bool(self.get_option('urls', project))
 
-
-    def get_config(self, project, **kwargs):
-        return [{
-            'name': 'urls',
-            'label': 'wechat robot url',
-            'type': 'textarea',
-            'help': 'Enter wechat robot url.',
-            'placeholder': 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4929eab2',
-            'validators': [validate_urls],
-            'required': False
-        }] 
-
     def get_webhook_urls(self, project):
         url = self.get_option('urls', project)
         if not url:
@@ -120,21 +93,43 @@ class WechatPlugin(NotificationPlugin):
             group.id,
         ]))
 
-    def notify_users(self, group, event, fail_silently=False): 
+
+    def notify_users(self, group, event, *args, **kwargs):
+        self.post_process(group, event, *args, **kwargs)
+
+    def post_process(self, group, event, *args, **kwargs):
+        """
+        Process error.
+        """
         if not self.is_configured(group.project):
             return
+
         if group.is_ignored():
             return
 
-        url = self.get_webhook_urls(group.project)
-        link = self.get_group_url(group)
-        message_format = '[%s] %s   %s'
-        message = message_format % (event.server_name, event.message, link)
-        data = {"msgtype": "text",
-                    "text": {
-                        "content": message
-                    }
-                }
-#        headers = {'Content-Type': 'application/json', 'Accept': 'text/plain'}
-        headers={"Content-Type": "application/json"}
-        r = requests.post(url, data=json.dumps(data).encode("utf-8"), headers=headers)
+        url = self.get_webhook_urls('url', group.project)
+        title = u"New alert from {}".format(event.project.slug)
+# {
+#     "msgtype": "markdown",
+#     "markdown": {
+#         "content": "实时新增用户反馈<font color=\"warning\">132例</font>，请相关同事注意。\n
+#          >类型:<font color=\"comment\">用户反馈</font> \n
+#          >普通用户反馈:<font color=\"comment\">117例</font> \n
+#          >VIP用户反馈:<font color=\"comment\">15例</font>"
+#     }
+# }
+        data = {
+            "msgtype": "markdown",
+            "markdown": {
+                "content": u"#### {title} \n > {message} [href]({url})".format(
+                    title=title,
+                    message=event.message,
+                    url=u"{}events/{}/".format(group.get_absolute_url(), event.id),
+                )
+            }
+        }
+        requests.post(
+            url=url,
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(data).encode("utf-8")
+        )
