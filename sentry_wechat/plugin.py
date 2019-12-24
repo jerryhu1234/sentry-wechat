@@ -3,7 +3,7 @@ sentry_wechat.models
 ~~~~~~~~~~~~~~~~~~~~~
 
 :copyright: (c) 2019 by Jerry hu, see AUTHORS for more details.
-:license: BSD, see LICENSE for more details.
+:license: MIT, see LICENSE for more details.
 """
 from __future__ import absolute_import
 
