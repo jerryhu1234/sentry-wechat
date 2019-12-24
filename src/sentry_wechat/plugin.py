@@ -102,7 +102,7 @@ class WechatPlugin(NotificationPlugin):
             return
 
         url = self.get_webhook_urls(group.project)
-        title = u"New alert from 【{}】,please pay attention to it.".format(event.project.slug)
+        title = u"New alert from [{}],please pay attention to it.".format(event.project.slug)
         data = {
             "msgtype": "markdown",
             "markdown": {
