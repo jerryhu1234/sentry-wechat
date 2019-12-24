@@ -5,16 +5,20 @@ sentry_wechat.models
 :copyright: (c) 2019 by Jerry hu, see AUTHORS for more details.
 :license: BSD, see LICENSE for more details.
 """
+from __future__ import absolute_import
 
+import time
 import json
-
 import requests
-from sentry.plugins.bases.notify import NotificationPlugin
-from django import forms
-
+import logging
+import six
+import sentry
 import sentry_wechat
 
+from django import forms
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+
 from sentry.exceptions import PluginError
 from sentry.plugins.bases import notify
 from sentry.http import is_valid_url, safe_urlopen
@@ -118,15 +122,6 @@ class WechatPlugin(NotificationPlugin):
 
         url = self.get_webhook_urls('url', group.project)
         title = u"New alert from {}".format(event.project.slug)
-# {
-#     "msgtype": "markdown",
-#     "markdown": {
-#         "content": "实时新增用户反馈<font color=\"warning\">132例</font>，请相关同事注意。\n
-#          >类型:<font color=\"comment\">用户反馈</font> \n
-#          >普通用户反馈:<font color=\"comment\">117例</font> \n
-#          >VIP用户反馈:<font color=\"comment\">15例</font>"
-#     }
-# }
         data = {
             "msgtype": "markdown",
             "markdown": {
