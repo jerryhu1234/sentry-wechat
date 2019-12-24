@@ -10,6 +10,7 @@ import json
 
 import requests
 from sentry.plugins.bases.notify import NotificationPlugin
+from django import forms
 
 import sentry_wechat
 
