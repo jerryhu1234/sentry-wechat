@@ -12,7 +12,6 @@ import requests
 from sentry.plugins.bases.notify import NotificationPlugin
 
 import sentry_wechat
-from .forms import DingDingOptionsForm
 
 def validate_urls(value, **kwargs):
     output = []
