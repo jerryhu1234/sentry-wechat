@@ -120,7 +120,7 @@ class WechatPlugin(NotificationPlugin):
         if group.is_ignored():
             return
 
-        url = self.get_webhook_urls('url', group.project)
+        url = self.get_webhook_urls(group.project)
         title = u"New alert from {}".format(event.project.slug)
         data = {
             "msgtype": "markdown",
