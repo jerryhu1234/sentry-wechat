@@ -125,8 +125,13 @@ class WechatPlugin(NotificationPlugin):
         data = {
             "msgtype": "markdown",
             "markdown": {
-                "content": u"#### {title} \n > {message} [href]({url})".format(
+ #               "content": u"#### {title} \n > {environment} \n > {level} \n > {message} [href]({url})".format(
+                "content": u"#### {title} \n > {firstSeen} \n > {lastSeen} \n > {level} \n > {message} [href]({url})".format(
                     title=title,
+                    # environment=environment,
+                    firstSeen=event.firstSeen,
+                    lastSeen=event.firstSeen,
+                    level=event.level,
                     message=event.message,
                     url=u"{}events/{}/".format(group.get_absolute_url(), event.id),
                 )
