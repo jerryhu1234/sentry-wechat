@@ -106,8 +106,10 @@ class WechatPlugin(NotificationPlugin):
         data = {
             "msgtype": "markdown",
             "markdown": {
-                "content": u"#### {title} \n > {message} [href]({url})".format(
+                "content": u"#### {title} \n > {logger} \n> {level} \n > {message} [href]({url})".format(
                     title=title,
+                    level=event.get_tag("level"),
+                    logger=event.get_tag("logger"),
                     message=event.message,
                     url=u"{}events/{}/".format(group.get_absolute_url(), event.id),
                 )
@@ -118,4 +120,4 @@ class WechatPlugin(NotificationPlugin):
             headers={"Content-Type": "application/json"},
             data=json.dumps(data).encode("utf-8")
         )
-        print(json.dumps(event).encode("utf-8"))
+
