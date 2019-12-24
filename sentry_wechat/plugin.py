@@ -21,7 +21,8 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from sentry.exceptions import PluginError
-from sentry.plugins.bases import notify
+# from sentry.plugins.bases import notify
+from sentry.plugins.bases.notify import NotificationPlugin
 from sentry.http import is_valid_url, safe_urlopen
 from sentry.utils.safe import safe_execute
 
@@ -42,7 +43,7 @@ def validate_urls(value, **kwargs):
     return '\n'.join(output)
 
 # https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4929eab2-xxxx
-class WechatForm(notify.NotificationConfigurationForm):
+class WechatForm(NotificationPlugin):
     urls = forms.CharField(
         label=_('Wechat robot url'),
         widget=forms.Textarea(attrs={
@@ -54,7 +55,10 @@ class WechatForm(notify.NotificationConfigurationForm):
         return validate_urls(value)
 
  
-class WechatPlugin(notify.NotificationPlugin):
+class WechatPlugin(NotificationPlugin):
+    """
+    Sentry plugin to send error counts to Wechat.
+    """
     author = 'jerry hu'
     author_url = 'https://github.com/jerryhu1234/sentry-wechat'
     version = sentry_wechat.VERSION
@@ -62,19 +66,27 @@ class WechatPlugin(notify.NotificationPlugin):
     resource_links = [
         ('Bug Tracker', 'https://github.com/jerryhu1234/sentry-wechat/issues'),
         ('Source', 'https://github.com/jerryhu1234/sentry-wechat'),
+        ('README', 'https://github.com/jerryhu1234/sentry-wechat/blob/master/README.md'),
     ]
 
-    slug = 'wechat'
-    title = 'wechat'
+    slug = 'Wechat'
+    title = 'Wechat'
     conf_title = title
-    conf_key = 'wechat'  
+    conf_key = slug
 
     project_conf_form = WechatForm
-    timeout = getattr(settings, 'SENTRY_WECHAT_TIMEOUT', 3) 
+    timeout = getattr(settings, 'SENTRY_WECHAT_TIMEOUT', 3)
     logger = logging.getLogger('sentry.plugins.wechat')
 
-    def is_configured(self, project, **kwargs):
+    # def is_configured(self, project, **kwargs):
+    #     return bool(self.get_option('urls', project))
+
+    def is_configured(self, project):
+        """
+        Check if plugin is configured.
+        """
         return bool(self.get_option('urls', project))
+
 
     def get_config(self, project, **kwargs):
         return [{
@@ -109,20 +121,20 @@ class WechatPlugin(notify.NotificationPlugin):
         ]))
 
     def notify_users(self, group, event, fail_silently=False): 
+        if not self.is_configured(group.project):
+            return
+        if group.is_ignored():
+            return
+
         url = self.get_webhook_urls(group.project)
         link = self.get_group_url(group)
         message_format = '[%s] %s   %s'
         message = message_format % (event.server_name, event.message, link)
-        # data = {"msgtype": "text",
-        #             "text": {
-        #                 "content": message
-        #             }
-        #         }
-        data = {
-                "msgtype": "text",
-                     "text": {
-                        "content": "hello world"
+        data = {"msgtype": "text",
+                    "text": {
+                        "content": message
+                    }
                 }
-        }
-        headers = {'Content-Type': 'application/json', 'Accept': 'text/plain'}
-        r = requests.post(url, data=json.dumps(data), headers=headers)
+#        headers = {'Content-Type': 'application/json', 'Accept': 'text/plain'}
+        headers={"Content-Type": "application/json"}
+        r = requests.post(url, data=json.dumps(data).encode("utf-8"), headers=headers)
