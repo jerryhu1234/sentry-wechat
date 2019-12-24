@@ -106,7 +106,7 @@ class WechatPlugin(NotificationPlugin):
         data = {
             "msgtype": "markdown",
             "markdown": {
-                "content": u"#### {title} \n > > environment：{environment} \n > level：{level} \n > logger：{logger} \n > {message} [href]({url})".format(
+                "content": u"#### {title} \n > environment: {environment} \n > level: {level} \n > logger: {logger} \n > {message} [href]({url})".format(
                     title=title,
                     environment=event.get_tag("environment"),
                     level=event.get_tag("level"),
