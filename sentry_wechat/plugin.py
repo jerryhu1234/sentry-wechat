@@ -20,7 +20,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from sentry.exceptions import PluginError
-from sentry.plugins.bases import notify
+from sentry.plugins.bases.notify import NotificationPlugin
 from sentry.http import is_valid_url, safe_urlopen
 from sentry.utils.safe import safe_execute
 
