@@ -41,7 +41,7 @@ def validate_urls(value, **kwargs):
     return '\n'.join(output)
 
 # https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4929eab2-xxxx
-class WechatForm(NotificationPlugin):
+class WechatForm(forms.Form):
     urls = forms.CharField(
         label=_('Wechat robot url'),
         widget=forms.Textarea(attrs={
