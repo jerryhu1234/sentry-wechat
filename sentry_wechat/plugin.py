@@ -56,7 +56,7 @@ class WechatForm(notify.NotificationConfigurationForm):
 class WechatPlugin(notify.NotificationPlugin):
     author = 'jerry hu'
     author_url = 'https://github.com/jerryhu1234/sentry-wechat'
-    version = sentry-wechat.VERSION
+    version = sentry.VERSION
     description = "Integrates wechat robot."
     resource_links = [
         ('Bug Tracker', 'https://github.com/jerryhu1234/sentry-wechat/issues'),
