@@ -29,8 +29,8 @@ setup(
     keywords='sentry wechat',
     include_package_data=True,
     zip_safe=False,
-    package_dir={'': 'sentry_wechat'},
-    packages=find_packages('sentry_wechat'),
+    package_dir={'': 'src'},
+    packages=find_packages('src'),
     install_requires=[
         'sentry>=9.0.0',
         'requests',
