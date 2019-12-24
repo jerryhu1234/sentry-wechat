@@ -76,9 +76,6 @@ class WechatPlugin(NotificationPlugin):
     timeout = getattr(settings, 'SENTRY_WECHAT_TIMEOUT', 3)
     logger = logging.getLogger('sentry.plugins.wechat')
 
-    # def is_configured(self, project, **kwargs):
-    #     return bool(self.get_option('urls', project))
-
     def is_configured(self, project):
         """
         Check if plugin is configured.
@@ -89,23 +86,7 @@ class WechatPlugin(NotificationPlugin):
         url = self.get_option('urls', project)
         if not url:
             return ''
-        return url 
-
-    def send_webhook(self, url, payload):
-        return safe_urlopen(
-            url=url,
-            json=payload,
-            timeout=self.timeout,
-            verify_ssl=False,
-        )
-
-    def get_group_url(self, group):
-        return absolute_uri(reverse('sentry-group', args=[
-            group.team.slug,
-            group.project.slug,
-            group.id,
-        ]))
-
+        return url
 
     def notify_users(self, group, event, *args, **kwargs):
         self.post_process(group, event, *args, **kwargs)
@@ -126,11 +107,8 @@ class WechatPlugin(NotificationPlugin):
             "msgtype": "markdown",
             "markdown": {
  #               "content": u"#### {title} \n > {environment} \n > {level} \n > {message} [href]({url})".format(
-                "content": u"#### {title} \n > {firstseen} \n > {lastseen} \n > {level} \n > {message} [href]({url})".format(
+                "content": u"#### {title} \n > {level} \n > {message} [href]({url})".format(
                     title=title,
-                    # environment=environment,
-                    firstseen=event.firstseen,
-                    lastseen=event.firstseen,
                     level=event.level,
                     message=event.message,
                     url=u"{}events/{}/".format(group.get_absolute_url(), event.id),
@@ -142,3 +120,4 @@ class WechatPlugin(NotificationPlugin):
             headers={"Content-Type": "application/json"},
             data=json.dumps(data).encode("utf-8")
         )
+       print json.dumps(event).encode("utf-8")
