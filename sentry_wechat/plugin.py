@@ -56,7 +56,7 @@ class WechatForm(notify.NotificationConfigurationForm):
 class WechatPlugin(notify.NotificationPlugin):
     author = 'jerry hu'
     author_url = 'https://github.com/jerryhu1234/sentry-wechat'
-    version = sentry.VERSION
+    version = wechat.VERSION
     description = "Integrates wechat robot."
     resource_links = [
         ('Bug Tracker', 'https://github.com/jerryhu1234/sentry-wechat/issues'),
@@ -112,12 +112,16 @@ class WechatPlugin(notify.NotificationPlugin):
         link = self.get_group_url(group)
         message_format = '[%s] %s   %s'
         message = message_format % (event.server_name, event.message, link)
-        data = {"msgtype": "text",
-                    "text": {
-                        "content": message
-                    }
+        # data = {"msgtype": "text",
+        #             "text": {
+        #                 "content": message
+        #             }
+        #         }
+        data = {
+                "msgtype": "text",
+                "text": {
+                "content": "hello world"
                 }
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        }
+        headers = {'Content-Type': 'application/json', 'Accept': 'text/plain'}
         r = requests.post(url, data=json.dumps(data), headers=headers)
-
- 
