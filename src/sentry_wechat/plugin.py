@@ -118,4 +118,4 @@ class WechatPlugin(NotificationPlugin):
             headers={"Content-Type": "application/json"},
             data=json.dumps(data).encode("utf-8")
         )
-       print (event)
+        print(event)
