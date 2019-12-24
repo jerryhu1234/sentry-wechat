@@ -14,6 +14,15 @@ from django import forms
 
 import sentry_wechat
 
+from django.utils.translation import ugettext_lazy as _
+from sentry.exceptions import PluginError
+from sentry.plugins.bases import notify
+from sentry.http import is_valid_url, safe_urlopen
+from sentry.utils.safe import safe_execute
+
+from sentry.utils.http import absolute_uri
+from django.core.urlresolvers import reverse
+
 def validate_urls(value, **kwargs):
     output = []
     for url in value.split('\n'):
