@@ -127,6 +127,6 @@ class WechatPlugin(notify.NotificationPlugin):
     def notify_users(self, group, event, *args, **kwargs):
         payload = self.get_group_data(group, event)
         for url in self.get_webhook_urls(group.project):
-            send_webhook(url, payload)
+            self.send_webhook(url, payload)
 
 
