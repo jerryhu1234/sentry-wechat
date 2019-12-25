@@ -18,7 +18,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="sentry-wechat",
-    version='0.0.1',
+    version='0.1.1',
     author='jerry hu',
     author_email='jerryhu_123@163.com',
     url='https://github.com/jerryhu1234/sentry-wechat',
