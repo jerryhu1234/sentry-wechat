@@ -108,11 +108,11 @@ class WechatPlugin(NotificationPlugin):
 
     def get_group_data(self, group, event):
         url = self.get_webhook_urls(group.project)
-        title = u"New alert from {}".format(event.project.slug)
+        title = u"New alert from [{}],please pay attention to it.".format(event.project.slug)
         data = {
             "msgtype": "markdown",
             "markdown": {
-                "content": u"#### {title} \n > environment: {environment} \n > level: {level} \n > logger: {logger} \n > {message} [href]({url})".format(
+                "content": u"#### {title} \n > environment: <font color=\"info\">{environment}</font> \n > level: <font color=\"warning\">{level}</font> \n > logger: <font color=\"comment\">{logger}</font> \n > {message} [href]({url})".format(
                     title=title,
                     environment=event.get_tag("environment"),
                     level=event.get_tag("level"),
