@@ -20,7 +20,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from sentry.exceptions import PluginError
-from sentry.plugins.bases.notify import NotificationPlugin
+from sentry.plugins.bases import notify
 from sentry.http import is_valid_url, safe_urlopen
 from sentry.utils.safe import safe_execute
 
@@ -40,7 +40,7 @@ def validate_urls(value, **kwargs):
     return "\n".join(urls)
 
 # https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4929eab2-xxxx
-class WechatForm(NotificationConfigurationForm):
+class WechatForm(notify.NotificationConfigurationForm):
     urls = forms.CharField(
         label=_("Wechat robot url"),
         widget=forms.Textarea(
@@ -53,7 +53,7 @@ class WechatForm(NotificationConfigurationForm):
         return validate_urls(value)
 
  
-class WechatPlugin(NotificationPlugin):
+class WechatPlugin(notify.NotificationPlugin):
     """
     Sentry plugin to send error counts to Wechat.
     """
